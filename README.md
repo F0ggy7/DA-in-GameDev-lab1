@@ -7,8 +7,8 @@
 | Задание | Выполнение | Баллы |
 | ------ | ------ | ------ |
 | Задание 1 | * | 60 |
-| Задание 2 | # | 20 |
-| Задание 3 | # | 20 |
+| Задание 2 | * | 20 |
+| Задание 3 | * | 20 |
 
 знак "*" - задание выполнено; знак "#" - задание не выполнено;
 
@@ -49,33 +49,76 @@
 ## Задание 2
 ### Пошагово выполнить каждый пункт раздела "ход работы" с описанием и примерами реализации задач
 Ход работы:
-- Шаг 1 Произвести подготовку данных для работы с алгоритмом линейной регрессии. 10 видов данных были установлены случайным образом, и данные находились в линейной зависимости. Данные преобразуются в формат массива, чтобы их можно было вычислить напрямую при использовании умножения и сложения.
+-  Произвести подготовку данных для работы с алгоритмом линейной регрессии. 10 видов данных были установлены случайным образом, и данные находились в линейной зависимости. Данные преобразуются в формат массива, чтобы их можно было вычислить напрямую при использовании умножения и сложения.
 
 ```py
 
-In [ ]:
-#Import the required modules, numpy for calculation, and Matplotlib for drawing
 import numpy as np
 import matplotlib.pyplot as plt
-#This code is for jupyter Notebook only
-%matplotlib inline
 
-# define data, and change list to array
 x = [3,21,22,34,54,34,55,67,89,99]
 x = np.array(x)
 y = [2,22,24,65,79,82,55,130,150,199]
 y = np.array(y)
 
-#Show the effect of a scatter plot
 plt.scatter(x,y)
 
 ```
+![Code_uNxykNiZIM](https://user-images.githubusercontent.com/75094394/193137734-8d444100-2abd-4a8b-94c6-408a70bfbe5f.png)
 
-- Шаг 2 Определите связанные функции. Функция модели: определяет модель линейной регрессии wx+b. Функция потерь: функция потерь среднеквадратичной ошибки. Функция оптимизации: метод градиентного спуска для нахождения частных производных w и b.
+- Определите связанные функции. Функция модели: определяет модель линейной регрессии wx+b. Функция потерь: функция потерь среднеквадратичной ошибки. Функция оптимизации: метод градиентного спуска для нахождения частных производных w и b.
 
 ```py
 
-In [ ]:
+def model(a, b, x):
+    return a*x + b
+
+def loss_function(a, b, x, y):
+    num = len(x)
+    prediction=model(a,b,x)
+    return (0.5/num) * (np.square(prediction-y)).sum()
+
+def optimize(a,b,x,y):
+    num = len(x)
+    prediction = model(a,b,x)
+    da = (1.0/num) * ((prediction -y)*x).sum()
+    db = (1.0/num) * ((prediction -y).sum())
+    a = a - Lr*da
+    b = b - Lr*db
+    return a, b
+
+def iterate(a,b,x,y,times):
+    for i in range(times):
+        a,b = optimize(a,b,x,y)
+    return a,b
+
+```
+### Начать итерацию
+- Шаг 1 Инициализация и модель итеративной оптимизации
+
+```py
+
+a = np.random.rand(1)
+print(a)
+b = np.random.rand(1)
+print(b)
+Lr = 0.000001
+
+a,b = iterate(a,b,x,y,1)
+prediction=model(a,b,x)
+loss = loss_function(a, b, x, y)
+print(a,b,loss)
+plt.scatter(x,y)
+plt.plot(x,prediction)
+
+```
+
+![Code_X4lZJPp2OL](https://user-images.githubusercontent.com/75094394/193143156-7fdc4d9f-387b-48c8-a5ec-5397cfe9526a.png)
+
+- Шаг 2 На второй итерации отображаются значения параметров, значения потерь и эффекты визуализации после итерации
+
+```py
+
 a,b = iterate(a,b,x,y,2)
 prediction=model(a,b,x)
 loss = loss_function(a, b, x, y)
@@ -85,12 +128,12 @@ plt.plot(x,prediction)
 
 ```
 
-- Шаг 3 Третья итерация показывает значения параметров, значения потерь и
-визуализацию после итерации
+![Code_xiGwUhAmtH](https://user-images.githubusercontent.com/75094394/193143125-bb7317ac-5b95-4960-90e6-b432eb5b7348.png)
+
+- Шаг 3 Третья итерация показывает значения параметров, значения потерь и визуализацию после итерации
 
 ```py
 
-In [ ]:
 a,b = iterate(a,b,x,y,3)
 prediction=model(a,b,x)
 loss = loss_function(a, b, x, y)
@@ -100,12 +143,12 @@ plt.plot(x,prediction)
 
 ```
 
-- Шаг 4 На четвертой итерации отображаются значения параметров, значения
-потерь и эффекты визуализации
+![Code_glx3o0sHpg](https://user-images.githubusercontent.com/75094394/193143080-2b3bd7d3-d44a-4cf7-8731-6191508d369f.png)
+
+- Шаг 4 На четвертой итерации отображаются значения параметров, значенияпотерь и эффекты визуализации
 
 ```py
 
-In [ ]:
 a,b = iterate(a,b,x,y,4)
 prediction=model(a,b,x)
 loss = loss_function(a, b, x, y)
@@ -115,12 +158,12 @@ plt.plot(x,prediction)
 
 ```
 
-- Шаг 5 Пятая итерация показывает значение параметра, значение потерь и
-эффект визуализации после итерации
+![Code_5cBP3G3OLH](https://user-images.githubusercontent.com/75094394/193143040-73c4e33f-1b86-4e6c-b2a7-cce48d76e3ef.png)
+
+- Шаг 5 Пятая итерация показывает значение параметра, значение потерь и эффект визуализации после итерации
 
 ```py
 
-In [ ]:
 a,b = iterate(a,b,x,y,5)
 prediction=model(a,b,x)
 loss = loss_function(a, b, x, y)
@@ -130,12 +173,12 @@ plt.plot(x,prediction)
 
 ```
 
-- Шаг 6 10000-я итерация, показывающая значения параметров, потери и
-визуализацию после итерации
+![Code_9oDDSshbzO](https://user-images.githubusercontent.com/75094394/193143011-f52fff7d-65f2-4df3-9443-8c913d688048.png)
+
+- Шаг 6 10000-я итерация, показывающая значения параметров, потери и визуализацию после итерации
 
 ```py
 
-In [ ]:
 a,b = iterate(a,b,x,y,10000)
 prediction=model(a,b,x)
 loss = loss_function(a, b, x, y)
@@ -145,68 +188,46 @@ plt.plot(x,prediction)
 
 ```
 
+![Code_GuwBTy6e0k](https://user-images.githubusercontent.com/75094394/193142970-414108d5-4200-4e00-a90f-05457d3ac387.png)
+
 ## Задание 3
-### Изучить код на Python и ответить на вопросы/
+### Должна ли величина loss стремиться к нулю при изменении исходных данных? Ответьте на вопрос, приведите пример выполнения кода, который подтверждает ваш ответ.
+Да, должна, так как с каждой итерацией модель постепенно "обучается". А соответственно функция потерь стремится к нулю.
 
-- Должна ли величина loss стремиться к нулю при изменении исходных данных? Ответьте на вопрос, приведите пример выполнения кода, который подтверждает ваш ответ.
+1 итерация
 
-- Какова роль параметра Lr? Ответьте на вопрос, приведите пример выполнения кода, который подтверждает ваш ответ. В качестве эксперимента можете изменить значение параметра.
+![Code_xiGwUhAmtH](https://user-images.githubusercontent.com/75094394/193143295-f276a302-84cd-4d3d-a907-159fd8e8f673.png)
 
+1000 итерация 
 
-
-- Перечисленные в этом туториале действия могут быть выполнены запуском на исполнение скрипт-файла, доступного [в репозитории](https://github.com/Den1sovDm1triy/hfss-scripting/blob/main/ScreatingSphereInAEDT.py).
-- Для запуска скрипт-файла откройте Ansys Electronics Desktop. Перейдите во вкладку [Automation] - [Run Script] - [Выберите файл с именем ScreatingSphereInAEDT.py из репозитория].
-
-```py
-
-import ScriptEnv
-ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
-oDesktop.RestoreWindow()
-oProject = oDesktop.NewProject()
-oProject.Rename("C:/Users/denisov.dv/Documents/Ansoft/SphereDIffraction.aedt", True)
-oProject.InsertDesign("HFSS", "HFSSDesign1", "HFSS Terminal Network", "")
-oDesign = oProject.SetActiveDesign("HFSSDesign1")
-oEditor = oDesign.SetActiveEditor("3D Modeler")
-oEditor.CreateSphere(
-	[
-		"NAME:SphereParameters",
-		"XCenter:="		, "0mm",
-		"YCenter:="		, "0mm",
-		"ZCenter:="		, "0mm",
-		"Radius:="		, "1.0770329614269mm"
-	], 
-)
-
-```
+![Code_GuwBTy6e0k](https://user-images.githubusercontent.com/75094394/193143330-adc8fea5-ce18-450c-be6f-286797a8620e.png)
 
 ### Какова роль параметра Lr? Ответьте на вопрос, приведите пример выполнения кода, который подтверждает ваш ответ. В качестве эксперимента можете изменить значение параметра.
 
-- Перечисленные в этом туториале действия могут быть выполнены запуском на исполнение скрипт-файла, доступного [в репозитории](https://github.com/Den1sovDm1triy/hfss-scripting/blob/main/ScreatingSphereInAEDT.py).
-- Для запуска скрипт-файла откройте Ansys Electronics Desktop. Перейдите во вкладку [Automation] - [Run Script] - [Выберите файл с именем ScreatingSphereInAEDT.py из репозитория].
+Lr - это learning rate, коэффициент скорости обучения. Чем больше этот параметр, тем быстрее модель обучается, а значит функция потерь меньше.
 
-```py
+Lr = 0,000001
+- Итерация 1
 
-import ScriptEnv
-ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
-oDesktop.RestoreWindow()
-oProject = oDesktop.NewProject()
-oProject.Rename("C:/Users/denisov.dv/Documents/Ansoft/SphereDIffraction.aedt", True)
-oProject.InsertDesign("HFSS", "HFSSDesign1", "HFSS Terminal Network", "")
-oDesign = oProject.SetActiveDesign("HFSSDesign1")
-oEditor = oDesign.SetActiveEditor("3D Modeler")
-oEditor.CreateSphere(
-	[
-		"NAME:SphereParameters",
-		"XCenter:="		, "0mm",
-		"YCenter:="		, "0mm",
-		"ZCenter:="		, "0mm",
-		"Radius:="		, "1.0770329614269mm"
-	], 
-)
+![Code_xiGwUhAmtH](https://user-images.githubusercontent.com/75094394/193143381-5e94452f-6524-448a-acc4-feda8f7e3548.png)
 
-```
+- Итерация 5
+
+![Code_9oDDSshbzO](https://user-images.githubusercontent.com/75094394/193143424-6936a655-d723-4dbe-a1d8-6aac52f2acdd.png)
+
+
+Lr = 0,0001
+- Итерация 1
+
+![Code_QJ2KVkuFGF](https://user-images.githubusercontent.com/75094394/193143727-90627428-a7a7-4cf5-bdb7-ff351258df3e.png)
+
+- Итерация 2
+
+![Code_iGPLcKk5Ef](https://user-images.githubusercontent.com/75094394/193143787-ef01c124-7b86-4344-94ce-29b7eca46be3.png)
+
+Фнкция потерь заметно уменьшилась, уже на второй итерации, когда при Lr = 0,000001 изменений на 5 итерации не заметно.
 
 ## Выводы
 
-В ходе лабароторной работы я установил необходимое программное обеспечение. Научился выводить в консоль Hello World.
+В ходе лабароторной работы я установил необходимое программное обеспечение. Научился выводить в консоль Hello World. Я знакомилася с основными операторами языка Python на примере реализации линейной регрессии. Сделал выводы. При уменьшении исходных данных уменьшается величина потерь; параметр Lr отвечает за разницу значений после каждой итерации.
 
